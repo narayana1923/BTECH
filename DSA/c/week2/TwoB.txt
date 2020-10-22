@@ -1,50 +1,43 @@
-#include <iostream>
-#include <algorithm>
-using namespace std;
-const char line='\n';
+#include <stdio.h>
+#include <string.h>
 int i,j,k;
-void intialization(string a[],int n){
-    cout<<"Enter student roll numbers separated by space : ";
-    for (i=0;i<n;i++) cin>>a[i];
-    cout<<line;
+void intialization(int n,char a[n][20]){
+    printf("Enter student roll numbers separated by space : ");
+    for (i=0;i<n;i++) scanf("%s",a[i]);
+    printf("\n");
 }
-void shell_sort(string a[],int n){
-    string temp;
-    for(i=0;i<n;i++) transform(a[i].begin(),a[i].end(),a[i].begin(),::toupper);
+void shell_sort(int n,char a[n][20]){
+    char temp[20];
     for(i=n/2;i>0;i/=2){
         for(j=i;j<n;j++){
-            temp=a[j];
-            for(k=j;k>=i && temp.compare(a[k-i])<0;k-=i) a[k]=a[k-i];
-            a[k]=temp;
+            strcpy(temp,a[j]);
+            for(k=j;k>=i && strcasecmp(temp,a[k-i])<0;k-=i) 
+                strcpy(a[k],a[k-i]);
+            strcpy(a[k],temp);
         }
     }
 }
-int binary_search(string a[],int n,string b){
+int binary_search(int n,char a[n][20],char b[]){
     int low=0,mid=0,high=n-1;
     while(low<=high){
         mid=(low+high)/2;
-        /*if(b.compare(a[low])<0) return 0;
-        else if(b.compare(a[high])>0) return 0;
-        else*/
-        if(b.compare(a[mid])==0) return 1;
-        else if(b.compare(a[mid])>0) low=mid+1;
-        else if(b.compare(a[mid])<0) high=mid-1;
+        if(strcasecmp(b,a[mid])==0) return 1;
+        else if(strcasecmp(b,a[mid])>0) low=mid+1;
+        else if(strcasecmp(b,a[mid])<0) high=mid-1;
     }
     return 0;
 }
 int main(){
     int n;
-    cout<<"Enter number of students: ";
-    cin>>n;
-    string a[n];
-    intialization(a,n);
-    shell_sort(a,n);
-    string b;
-    cout<<"Enter the roll number you want to search: ";
-    cin>>b;
-    transform(b.begin(),b.end(),b.begin(),::toupper);
-    binary_search(a,n,b);
-    cout<<"----------------------using Non-Recursive Binary Search----------------------------"<<line;
-    cout<<"The student with roll number "<<b<<((binary_search(a,n,b)? " ":" not "))<<"attended placement training"<<line;
+    printf("Enter number of students: ");
+    scanf("%d",&n);
+    char a[n][20];
+    intialization(n,a);
+    shell_sort(n,a);
+    char b[20];
+    printf("Enter the roll number you want to search: ");
+    scanf("%s",b);
+    printf("----------------------using Non-Recursive Binary Search----------------------------\n");
+    printf("The student with roll number %s%sattended placement training",b,(binary_search(n,a,b)? " ":" not "));
     return 0;
 }
