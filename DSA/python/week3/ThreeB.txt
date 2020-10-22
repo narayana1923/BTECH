@@ -1,0 +1,205 @@
+class node:
+    def __init__(self, emp_id: int = 0, emp_mobileno: int = 0, emp_sal: float = 0.0, emp_dept: str = "", nxt=None,
+                 prev=None):
+        self.emp_id = emp_id
+        self.emp_mobileno = emp_mobileno
+        self.emp_sal = emp_sal
+        self.emp_dept = emp_dept
+        self.nxt = nxt
+        self.prev = prev
+
+
+class DLL:
+    def __init__(self):
+        self.head = None
+        self.last = None
+        self.count = 0
+
+    def create(self, ide):
+        emp_id = ide
+        emp_mobileno = int(input("Enter employee mobile no : "))
+        emp_sal = float(input("Enter employee salary: "))
+        emp_dept = input("Enter employee dept : ")
+        temp = node(emp_id, emp_mobileno, emp_sal, emp_dept)
+        self.count += 1
+        return temp
+
+    def searchNode(self, emp_id):
+        temp = None
+        ptr = self.head
+        while ptr:
+            if ptr.emp_id == emp_id:
+                temp = ptr
+                break
+            ptr = ptr.nxt
+        return temp
+
+    def add(self):
+        i = 1
+        n = int(input("Enter number of employees you want to add: "))
+        if self.head == None:
+            temp = self.create(int(input("Enter employee id: ")))
+            self.last = self.head = temp
+            i += 1
+            print()
+        while i <= n:
+            print("---------------Enter Employee - %d details---------------\n" % i)
+            self.insertAtEnd()
+            i += 1
+        print("Successfully updated the DLL\n")
+
+    def displayDLL(self):
+        temp = self.head
+        print("\n%-10s%-15s%-13s%s\n" %
+              ("Emp id", "Emp_mobileno", "Emp sal", "Emp dept"))
+        while temp:
+            print("%-10d%-15d%-13.2f%s" %
+                  (temp.emp_id, temp.emp_mobileno, temp.emp_sal, temp.emp_dept))
+            temp = temp.nxt
+        print()
+
+    def insertAtEnd(self):
+        emp_id = int(input("Enter employee id : "))
+        if self.searchNode(emp_id) is not None:
+            print("\nEmployee already exists in DLL\n")
+        else:
+            temp = self.create(emp_id)
+            if (self.head.next is None):
+                self.last = temp
+                self.head.next = self.last
+                self.last.prev = self.head
+                return
+            self.last.next = temp
+            temp = self.last
+            self.last = self.last.next
+            self.last.prev = temp
+
+    def deleteaAtEnd(self):
+    	if self.head.next is not None:
+			self.head =self.head.next
+			self.head.prev = None
+   		else:
+        	self.head=None
+			self.last=None
+    	count-=1
+    	printf("\nDeleted successfully\n")
+
+    def deleteAtFront(self):
+        if self.head.nxt:
+            self.head = self.head.nxt
+            self.head.prev = None
+        else:
+            self.head = None
+        print("Deleted successfully\n")
+
+    def insertAtFront(self):
+        emp_id = int(input("Enter employee id : "))
+        if self.searchNode(emp_id):
+            print("Employee already exists in DLL\n")
+        else:
+            temp = self.create(emp_id)
+            temp.next=self.head
+            self.head.prev=temp
+            self.head=temp
+            print("Successfully updated the DLL\n")
+
+    def insert(self):
+        emp_id=int(input("Enter employee id after which you want to insert : "))
+		temp = searchNode(emp_id)
+		if (temp is None):
+			printf("\nEmployee id entered doesn't exist in DLL\n")
+		else:
+			emp_id=int(input("Enter employee id you want to insert : "))
+			if (searchNode(emp_id) is not None):
+				printf("\nEmployee already present in DLL\n")
+			else:
+				temp1 = create(id)
+				if (temp.next != NULL):
+					temp1.next,temp.next,temp1.prev,temp1.next.prev = temp.next,temp1,temp,temp1
+				else:
+					temp.next,temp1.prev = temp1
+		printf("Successfully updated the DLL\n")
+
+    def delet(self):
+        emp_id = int(input("Enter employee id you want to delete : "))
+        temp = self.searchNode(emp_id)
+        if temp is None:
+            print("Employee id entered doesn't exist in DLL\n")
+        else:
+            if (temp.next is None):
+				self.deleteaAtEnd()
+			else if (temp.prev is None):
+				self.deleteAtFront()
+			else:
+				temp.prev.next = temp.next
+				temp.next.prev = temp.prev
+			self.count-=1
+			printf("\nDeleted successfully\n")
+
+    def todo(self, option):
+        if option in range(1, 11):
+            if option == 1:
+                self.add()
+            elif option == 2:
+                print("Total members in DLL is %d" % self.count)
+            elif option == 3:
+                if self.count == 0:
+                    print("There are no employees in DLL\n")
+                else:
+                    self.displayDLL()
+            elif option == 4:
+                if self.count == 0:
+                    print("There are no employees in DLL\n")
+                else:
+                    self.insertAtFront()
+            elif option == 5:
+                if self.count == 0:
+                    print("There are no employees in DLL\n")
+                else:
+                    self.insertAtEnd()
+            elif option == 6:
+                if self.count == 0:
+                    print("There are no employees in DLL\n")
+                else:
+                    self.insert()
+            elif option == 7:
+                if self.count == 0:
+                    print("There are no employees in DLL to delete\n")
+                else:
+                    self.deleteAtFront()
+            elif option == 8:
+                if self.count == 0:
+                    print("There are no employees in DLL to delete\n")
+                else:
+                    self.deleteaAtEnd()
+            elif option == 9:
+                if self.count == 0:
+                    print("There are no employees in DLL to delete\n")
+                else:
+                    self.delet()
+            elif option == 10:
+                print("\n------------------------Program ends------------------------")
+        else:
+            print("Enter a valid option !!\n")
+
+    def operations(self):
+        option = 0
+        while option != 10:
+            print("\n1. Add members\n" +
+                  "2.  Count of nodes in DLL\n" +
+                  "3.  Display Employee data in DLL\n"
+                  "4.  Insert Employee at Front of the DLL\n" +
+                  "5.  Insert Employee at End of the DLL\n" +
+                  "6.  Insert Employee at a specific position in DLL\n" +
+                  "7.  Delete Employee at Front of the DLL\n" +
+                  "8.  Delete Employee at End of the DLL\n" +
+                  "9.  Delete Employee at a specific position in DLL\n" +
+                  "10. Exit\n")
+            option = int(input("\nEnter your option: "))
+            self.todo(option)
+
+
+if __name__ == '__main__':
+    print("------------------------Program starts------------------------\n\n")
+    l = DLL()
+    l.operations()

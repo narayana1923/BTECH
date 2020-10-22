@@ -1,0 +1,16 @@
+#include<stdio.h>
+#include <math.h>
+void swap(int *x,int *y){
+    *x=*x+*y;
+    *y=*x-*y;
+    *x=*x-*y;
+}
+int main(){
+    int a,b;
+    printf("Enter a and b value seperated by comma: ");
+    scanf("%d,%d",&a,&b);
+    printf("Before swapping a and b values are %d,%d",a,b);
+    swap(&a,&b);
+    printf("\nAfter swapping a and b values are %d,%d",a,b);
+    return 0;
+}

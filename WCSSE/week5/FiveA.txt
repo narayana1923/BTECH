@@ -1,0 +1,14 @@
+#include <stdio.h>
+typedef long long int lli;
+
+lli fact(lli f ){
+	if(f==1) return 1;
+	else return f*fact(f-1);
+}
+
+int main(){
+	int f;
+	printf("\nEnter the number you want to find factorial for: ");
+	scanf("%d",&f);
+	printf("\nfactorial of %d is %lld\n\n",f,fact(f));
+}

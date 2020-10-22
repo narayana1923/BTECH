@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<string.h>
+int main(){
+		char class[20];
+		int sfail=0,grace=0;
+		printf("Enter the class obtained: ");
+		scanf("%s",class);
+		int num=(strcmp(strlwr(class),"first")==0)? 1:(strcmp(strlwr(class),"second")==0)? 2:(strcmp(strlwr(class),"third")==0)? 3:0;
+		if(num!=0){
+			printf("Enter number of subjects failed: ");
+			scanf("%d",&sfail);
+		}
+		switch(num){
+			case 1:
+				if(sfail<=3) grace=5;
+				break;
+			case 2:
+				if(sfail<=2) grace=4;
+				break;
+			case 3:
+				if(sfail==1) grace=5;
+				break;
+			default:
+				printf("The class you entered is incorrect\n\n");
+			}
+
+		if(grace==0 && num!=0) printf("no grace marks\n\n");
+		else if(grace!=0) printf("Grace marks is %d\n\n",grace);
+		return 0;
+}
+
