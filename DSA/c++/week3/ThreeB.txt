@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <iomanip>
-#include <algorithm>
+#include <limits>
 using namespace std;
 const char l = '\n';
 class Node
@@ -10,27 +10,18 @@ public:
 	int emp_id, emp_mobileno;
 	double emp_sal;
 	string emp_dept;
-	Node *next;
-	Node *prev;
-	Node(int emp_id = 0, int emp_mobileno = 0, double emp_sal = 0.0, string emp_dept = "", Node *next = NULL, Node *prev = NULL)
-	{
-		this->emp_id = emp_id;
-		this->emp_mobileno = emp_mobileno;
-		this->emp_sal = emp_sal;
-		this->emp_dept = emp_dept;
-		this->next = next;
-		this->prev = prev;
-	}
-	~Node()
-	{
-		delete this;
-	}
+	Node *next, *prev;
+	Node(int emp_id = 0, int emp_mobileno = 0, double emp_sal = 0.0,
+		 string emp_dept = "", Node *next = NULL, Node *prev = NULL) : emp_id(emp_id),
+																	   emp_mobileno(emp_mobileno), emp_sal(emp_sal), emp_dept(emp_dept), next(next),
+																	   prev(prev) {}
 };
 class LinkedList
 {
 public:
 	Node *head = NULL;
-	Node *first = NULL;
+	Node *last = NULL;
+	int count = 0;
 	Node *searchNode(int id)
 	{
 		Node *temp = NULL;
@@ -46,82 +37,63 @@ public:
 		}
 		return temp;
 	}
-
-	int count()
+	Node *create()
 	{
-		int n = 0;
-		Node *temp = head;
-		while (temp != NULL)
+		int id;
+		printf("Enter employee id : ");
+		cin >> id;
+		if (searchNode(id) != NULL)
 		{
-			temp = temp->next;
-			n++;
+			cout << l << "Employee already exists in DLL" << l;
+			return NULL;
 		}
-		return n;
+		Node *temp = new Node();
+		temp->emp_id = id;
+		cout << "Enter employee mobile no, salary separated by space : ";
+		cin >> temp->emp_mobileno>> temp->emp_sal;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cout << "Enter employee dept : ";
+		cin >> temp->emp_dept;
+		cout << l;
+		count++;
+		return temp;
 	}
-
+	void insertAtEnd()
+	{
+		Node *temp = create();
+		if (temp == NULL)
+			return;
+		if (head->next == NULL)
+		{
+			last = temp;
+			head->next = last;
+			last->prev = head;
+			return;
+		}
+		last->next = temp;
+		temp = last;
+		last = last->next;
+		last->prev = temp;
+	}
 	void add()
-	{ //Create a DLL of N Employees Data by using end insertion.
+	{
 		int n, i = 1;
 		cout << l << "Enter number of employees you want to add: ";
 		cin >> n;
 		Node *temp;
 		if (head == NULL)
 		{
-			first = new Node();
-			printf("Enter employee - %d id : ", i);
-			cin >> first->emp_id;
-			fflush(stdin);
-			printf("Enter employee - %d mobile no : ", i);
-			cin >> first->emp_mobileno;
-			fflush(stdin);
-			printf("Enter employee - %d salary: ", i);
-			cin >> first->emp_sal;
-			fflush(stdin);
-			printf("Enter employee - %d dept : ", i);
-			getline(cin, first->emp_dept);
-			fflush(stdin);
+			cout << "---------------Enter Employee - " << i << " details---------------\n";
+			temp = create();
 			i++;
-			head = first;
-			temp = head;
-			cout << l;
+			head = temp;
+			last = temp;
 		}
-		else
-		{
-			temp = this->first;
-			while (temp->next != NULL)
-				temp = temp->next;
-		}
-		Node *cur = temp;
 		while (i <= n)
 		{
-			Node *value = new Node();
-			printf("Enter employee - %d id : ", i);
-			cin >> value->emp_id;
-			fflush(stdin);
-			if (searchNode(value->emp_id) != NULL)
-			{
-				cout << l << "Employee already exists in DLL" << l;
-				delete value;
-				i++;
-			}
-			else
-			{
-				printf("Enter employee - %d mobile no : ", i);
-				cin >> value->emp_mobileno;
-				fflush(stdin);
-				printf("Enter employee - %d salary: ", i);
-				cin >> value->emp_sal;
-				fflush(stdin);
-				printf("Enter employee - %d dept : ", i);
-				getline(cin, value->emp_dept);
-				fflush(stdin);
-				temp->next = value;
-				cur = temp;
-				temp = temp->next;
-				temp->prev = cur;
-				i++;
-				cout << l;
-			}
+			cout << "---------------Enter Employee - " << i << " details---------------\n";
+			insertAtEnd();
+			i++;
 		}
 		cout << l << "Successfully updated the DLL" << l;
 	}
@@ -137,147 +109,75 @@ public:
 		}
 		cout << l;
 	}
-	void insertAtEnd()
+	void del_main()
 	{
-		Node *temp = this->head;
-		while (temp->next != NULL)
-			temp = temp->next;
-		Node *cur = temp;
-		Node *value = new Node();
-		printf("Enter employee id : ");
-		cin >> value->emp_id;
-		fflush(stdin);
-		if (searchNode(value->emp_id) != NULL)
-		{
-			cout << l << "Employee already exists in DLL" << l;
-			delete value;
-		}
-		else
-		{
-			printf("Enter employee mobile no : ");
-			cin >> value->emp_mobileno;
-			fflush(stdin);
-			printf("Enter employee salary : ");
-			cin >> value->emp_sal;
-			fflush(stdin);
-			printf("Enter employee dept : ");
-			getline(cin, value->emp_dept);
-			fflush(stdin);
-			temp->next = value;
-			cur = temp;
-			temp = temp->next;
-			temp->prev = cur;
-			cout << l << "Successfully updated the DLL" << l;
-		}
+		delete head;
+		head = NULL;
+		last = NULL;
 	}
 	void deleteaAtEnd()
 	{
-		Node *temp = this->head;
-		while (temp->next != NULL)
+		if (last->prev != NULL)
 		{
-			temp = temp->next;
-		}
-		if (temp->prev != NULL)
-		{
-			temp = temp->prev;
-			temp->next = NULL;
-			delete temp->next;
+			last = last->prev;
+			delete last->next;
+			last->next = nullptr;
 		}
 		else
-		{
-			delete this->head;
-			this->head = NULL;
-		}
+			del_main();
+		count--;
 		cout << l << "Deleted successfully" << l;
 	}
 	void deleteAtFront()
 	{
 		if (head->next != NULL)
 		{
-			this->head = this->head->next;
-			delete this->head->prev;
+			head = head->next;
+			delete head->prev;
+			head->prev = nullptr;
 		}
 		else
-		{
-			this->head = NULL;
-			delete this->head;
-		}
+			del_main();
+		count--;
 		cout << l << "Deleted successfully" << l;
 	}
 	void insertAtFront()
 	{
-		Node *value = new Node();
-		printf("Enter employee id : ");
-		cin >> value->emp_id;
-		fflush(stdin);
-		if (searchNode(value->emp_id) != NULL)
-		{
-			cout << l << "Employee already exists in DLL" << l;
-			delete value;
-		}
-		else
-		{
-			printf("Enter employee mobile no : ");
-			cin >> value->emp_mobileno;
-			fflush(stdin);
-			printf("Enter employee salary : ");
-			cin >> value->emp_sal;
-			fflush(stdin);
-			printf("Enter employee dept : ");
-			getline(cin, value->emp_dept);
-			fflush(stdin);
-			this->first->prev = value;
-			Node *cur = this->first;
-			this->first = this->first->prev;
-			this->first->next = cur;
-			this->head = this->first;
-			cout << l << "Successfully updated the DLL" << l;
-		}
+		Node *temp = create();
+		if (temp == NULL)
+			return;
+		head->prev = temp;
+		temp = head;
+		head = head->prev;
+		head->next = temp;
+		cout << "\nSuccessfully updated the DLL\n";
 	}
 	void insert()
 	{
-		Node *value = new Node();
-		printf("Enter employee id at which you want to insert : ");
-		cin >> value->emp_id;
-		fflush(stdin);
-		Node *temp = searchNode(value->emp_id);
+		int id;
+		cout << "Enter employee id after which you want to insert : ";
+		cin >> id;
+		Node *temp = searchNode(id);
 		if (temp == NULL)
 		{
-			cout << l << "Employee id entered doesn't exist in DLL" << l;
-			delete value;
+			cout << "\nEmployee id entered doesn't exist in DLL\n";
 		}
 		else
 		{
-			printf("Enter employee id you want to insert : ");
-			cin >> value->emp_id;
-			if (searchNode(value->emp_id) != NULL)
+			Node *temp1 = create();
+			if(temp1==NULL) return;
+			if (temp->next != NULL)
 			{
-				cout << l << "Employee already present in DLL" << l;
-				delete value;
+
+				temp1->next = temp->next;
+				temp->next = temp1;
+				temp1->prev = temp;
+				temp1->next->prev = temp1;
 			}
 			else
 			{
-				printf("Enter employee mobile no : ");
-				cin >> value->emp_mobileno;
-				fflush(stdin);
-				printf("Enter employee salary: ");
-				cin >> value->emp_sal;
-				fflush(stdin);
-				printf("Enter employee dept : ");
-				getline(cin, value->emp_dept);
-				fflush(stdin);
-				if (temp->next != NULL)
-				{
-					value->next = temp->next;
-					value->prev = temp;
-					temp->next->prev = value;
-					temp->next = value;
-				}
-				else
-				{
-					temp->next = value;
-					value->prev = temp;
-				}
+				temp->next = temp1;
+				temp1->prev = temp;
 			}
 		}
 		cout << l << "Successfully updated the DLL" << l;
@@ -285,9 +185,8 @@ public:
 	void delet()
 	{
 		int emp_id;
-		printf("Enter employee id you want to delete : ");
+		cout << "Enter employee id you want to delete : ";
 		cin >> emp_id;
-		fflush(stdin);
 		Node *temp = searchNode(emp_id);
 		if (temp == NULL)
 		{
@@ -295,38 +194,35 @@ public:
 		}
 		else
 		{
-			if (this->head->emp_id == emp_id)
+			if (temp->next == NULL)
 			{
-				if (count() != 1)
-				{
-					this->head = this->head->next;
-					this->head->prev = NULL;
-					delete this->head->prev;
-				}
-				else
-				{
-					this->head = NULL;
-					delete this->head;
-				}
+				deleteaAtEnd();
+			}
+			else if (temp->prev == NULL)
+			{
+				deleteAtFront();
 			}
 			else
 			{
-				if (temp->next == NULL)
-				{
-					temp = temp->prev;
-					delete temp->next;
-					temp->next = NULL;
-				}
-				else
-				{
-					temp->prev->next = temp->next;
-					temp->next->prev = temp->prev;
-					delete temp;
-					temp = NULL;
-				}
+				temp->prev->next = temp->next;
+				temp->next->prev = temp->prev;
+				delete temp;
 			}
+			count--;
 			cout << l << "Deleted successfully" << l;
 		}
+	}
+	void finish()
+	{
+		Node *temp;
+		while (head != NULL)
+		{
+			temp = head;
+			head = head->next;
+			delete temp;
+		}
+		head = nullptr;
+		last = nullptr;
 	}
 	void todo(int option)
 	{
@@ -336,51 +232,52 @@ public:
 			add();
 			break;
 		case 2:
-			cout << l << "Total members in DLL is " << count() << l;
+			cout << l << "Total members in DLL is " << count << l;
 			break;
 		case 3:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL" << l;
 			else
 				displayDLL();
 			break;
 		case 4:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL" << l;
 			else
 				insertAtFront();
 			break;
 		case 5:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL" << l;
 			else
 				insertAtEnd();
 			break;
 		case 6:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL" << l;
 			else
 				insert();
 			break;
 		case 7:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL to delete" << l;
 			else
 				deleteAtFront();
 			break;
 		case 8:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL to delete" << l;
 			else
 				deleteaAtEnd();
 			break;
 		case 9:
-			if (count() == 0)
+			if (count == 0)
 				cout << l << "There are no employees in DLL to delete" << l;
 			else
 				delet();
 			break;
 		case 10:
+			finish();
 			cout << l << l << "------------------------Program ends------------------------" << l << l;
 			break;
 		default:
