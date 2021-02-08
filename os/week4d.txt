@@ -1,0 +1,70 @@
+import java.util.Scanner;
+
+class RoundRobin{
+	int BT[],WT[],TAT[],PID[],a[];
+	int q;
+	float awt,atat;
+	RoundRobin(Scanner scan,int n){
+		BT=new int[n];
+		WT=new int[n];
+		TAT=new int[n];
+		PID=new int[n];
+		a=new int[n];
+		for(int i=0;i<n;i++){
+			System.out.printf("Brust time of process-%d: ",i+1);
+			BT[i]=scan.nextInt();
+			PID[i]=i+1;
+		}
+		System.out.print("Enter time quantum: ");
+		q=scan.nextInt();
+	}
+	void calculate(int n){
+		a=new int[BT.length];
+		for(int i=0;i<n;i++) a[i]=BT[i];
+		int sum=0;
+		do{
+			for(int i=0;i<n;i++){
+				if(a[i]>q){
+					a[i]=a[i]-q;
+					for(int j=0;j<n;j++){
+						if(j!=i && a[j]!=0){
+							WT[j]+=q;
+						}
+					}
+				}
+				else{
+					for(int j=0;j<n;j++){
+						if(j!=i && a[j]!=0){
+							WT[j]+=a[i];
+						}
+					}
+					a[i]=0;
+				}
+			}
+			sum=0;
+			for(int k=0;k<n;k++) sum+=a[k];
+		}while(sum!=0);
+		for(int i=0;i<n;i++){
+			TAT[i]=WT[i]+BT[i];
+			atat+=TAT[i];
+			awt+=WT[i];
+		}
+	}
+
+	void printDetails(int n){
+		System.out.println("Process BT\t WT\t TAT");
+		for(int i=0;i<n;i++){
+			System.out.println(String.format("   %d\t%d\t %d\t %d\t",PID[i],BT[i],WT[i],TAT[i]));
+		}
+		System.out.println(String.format("Avg waiting & TAT are %.2f , %.2f",awt/n,atat/n));
+	}
+
+	public static void main(String args[]){
+		Scanner scan=new Scanner(System.in);
+        System.out.print("Enter number of processes: ");
+		int n=scan.nextInt();
+		RoundRobin obj=new RoundRobin(scan,n);
+		obj.calculate(n);
+		obj.printDetails(n);
+	}
+}

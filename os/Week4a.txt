@@ -1,0 +1,66 @@
+import java.util.Scanner;
+class Week4a{
+    int n,BT[],PID[],WT[],TAT[],AT[];
+    float atat,awt;
+    Week4a(Scanner scan){
+        System.out.print("Enter number of processes: ");
+        n=scan.nextInt();
+        BT=new int[n];
+        WT=new int[n];
+        TAT=new int[n];
+        AT=new int[n];
+        PID=new int[n];
+        for(int i=0;i<n;i++){
+            System.out.print("Enter arrival time of process - "+(i+1)+" : ");
+            AT[i]=scan.nextInt();
+            System.out.print("Enter burst time of process - "+(i+1)+" : ");
+            BT[i]=scan.nextInt();
+            PID[i]=i+1;
+        }
+    }
+
+    void sort(){
+        for(int i=0;i<n-1;i++){
+			int min=i;
+			for(int j=i+1;j<n;j++){
+				if(AT[min]>AT[j]){
+					min=j;
+				}
+			}
+			int temp=BT[min];
+			BT[min]=BT[i];
+			BT[i]=temp;
+			temp=PID[min];
+			PID[min]=PID[i];
+			PID[i]=temp;
+			temp=AT[min];
+			AT[min]=AT[i];
+			AT[i]=temp;
+		}
+    }
+    void calculate(){
+        WT[0]=0;
+		TAT[0]=BT[0];
+		atat=TAT[0];
+		for(int i=1;i<n;i++){
+			WT[i]=WT[i-1]+BT[i-1]-AT[i];
+			TAT[i]=BT[i]+WT[i];
+			awt+=WT[i];
+			atat+=TAT[i];
+		}
+    }
+    void printDetails(){
+        System.out.println("PROCSESS Arrival Time BT WT TAT");
+		for(int i=0;i<n;i++){
+			System.out.println(String.format("%d\t\t%d\t %d  %d  %d",PID[i],AT[i],BT[i],WT[i],TAT[i]));
+		}
+		System.out.println("Avg watiing time & turn around time are "+(awt/n)+" "+(atat/n));
+    }
+    public static void main(String args[]){
+        Scanner scan=new Scanner(System.in);
+        Week4a w=new Week4a(scan);
+        w.sort();
+        w.calculate();
+        w.printDetails();
+    }
+}
